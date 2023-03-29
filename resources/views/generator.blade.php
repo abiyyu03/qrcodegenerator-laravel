@@ -21,14 +21,29 @@
                     <form action="{{ route('generate') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group">
-                            <label for="">Some Text or Link</label>
+                            <label for="">Tipe <sup class="text-danger">*</sup></label>
+                            <select name="type" class="form-control">
+                                <option value="" {{ request()->type == '' ? 'selected' : '' }}>Teks Biasa
+                                </option>
+                                <option value="https://" {{ request()->type == 'https://' ? 'selected' : '' }}>Link
+                                </option>
+                                <option value="mailto:" {{ request()->type == 'mailto:' ? 'selected' : '' }}>Email
+                                </option>
+                                <option value="tel:" {{ request()->type == 'tel:' ? 'selected' : '' }}>Nomor Telepon
+                                </option>
+                                <option value="sms:" {{ request()->type == 'sms:' ? 'selected' : '' }}>SMS</option>
+                            </select>
+                        </div>
+                        <div class="form-group mt-2">
+                            <label for="">Konten <sup class="text-danger">*</sup></label>
                             <input type="text" class="form-control" name="data" maxlength="256"
-                                value="{{ request()->data != null ? request()->data : '' }}">
+                                placeholder="Maksimal 256 Karakter"
+                                value="{{ request()->data != null ? request()->data : '' }}" required>
                             @error('data')
                                 <span class="alert">{{ $message }}</span>
                             @enderror
                         </div>
-                        <div class="form-group mt-3">
+                        <div class="form-group mt-2">
                             <label for="">Logo</label>
                             <input type="file" class="form-control" name="logo" accept="image/*">
                         </div>
@@ -38,15 +53,17 @@
                         </div>
                     </form>
                     <div class="mt-4 text-center">
-                        {{-- <p>{{ $image }}</p> --}}
-                        {{-- <img src="{!! $qr->embedData(QrCode::format('png')->generate('Embed me into an e-mail!'), '/logo/tab.jpeg', 'image/png') !!}"> --}}
-                        @if ($image == null)
-                            {!! $qr !!}
-                        @else
-                            <img src="data:image/png;base64, {!! $qr !!} ">
+                        @if ($filename)
+                            {{-- @if ($image != null) --}}
+                            <img src="{{ asset($filename) }}">
+                            {{-- <img src="data:image/png;base64, {!! $qr !!} "> --}}
+                            {{-- @else
+                                <img src="{{ asset($filename) }}">
+                            @endif --}}
+                            <div class="text-center">
+                                <a href="{{ asset($filename) }}" class="btn btn-primary mt-3" download>Download</a>
+                            </div>
                         @endif
-                        {{-- {!! QrCode::size(200)->generate('https://docs.google.com/spreadsheets/d/1Rg0F6zNUFMXRc4E12ZDlpUHI4g3PB-l8ywZNbYVPZqQ/edit#gid=230104751'); !!} --}}
-                        {{-- <img src="data:image/png;base64,{!! base64_encode(QrCode::size(200)->format('png')->generate('Hello')); !!}" alt=""> --}}
                     </div>
                 </div>
             </div>

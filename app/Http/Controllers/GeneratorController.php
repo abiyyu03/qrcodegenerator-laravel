@@ -9,19 +9,18 @@ use Image;
 class GeneratorController extends Controller
 {
     private $filename;
-    function index($data = null)
+    function index()
     {
-        //     if($data != NULL){
-        //         $qr = $this->generate($data);
-        //     }
         return view('generator');
     }
 
     function generate(Request $request, $data = NULL)
     {
         $data = $request->data;
+        $type = $request->type;
         $image = $request->file('logo');
 
+        $filenameNoLogo = 'qr/qr' . ltrim(\Carbon\Carbon::today()->toDateString()) . '.png';
         if ($data != NULL) {
             if ($image != NULL) {
                 $this->uploadLogo($image);
@@ -29,20 +28,18 @@ class GeneratorController extends Controller
                     ->format('png')
                     ->errorCorrection('H')
                     ->merge(public_path() . "/logo/$this->filename", .3, true)
-                    ->generate($data);
+                    ->generate("$type:$data", "$filenameNoLogo");
                 $qr = base64_encode($qr);
             } else {
-                $qr = QrCode::size(200)
-                    ->generate($data);
+                $qr = QrCode::encoding('UTF-8')->size(200)->format('png')
+                    ->generate("$type:$data", $filenameNoLogo);
             }
         } else {
             $qr = NULL;
         }
-        return view('generator', compact('qr', 'image'));
-    }
-
-    function saveGeneratedQRCode()
-    {
+        $this->filename = $filenameNoLogo;
+        $filename = $this->filename;
+        return view('generator', compact('qr', 'image', 'filename'));
     }
 
     function uploadLogo($image)
