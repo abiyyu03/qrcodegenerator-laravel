@@ -23,10 +23,10 @@
                         <div class="form-group">
                             <label for="">Tipe <sup class="text-danger">*</sup></label>
                             <select name="type" class="form-control">
-                                <option value="" {{ request()->type == '' ? 'selected' : '' }}>Teks Biasa
+                                <option value="" {{ request()->type == '' ? 'selected' : '' }}>Teks Biasa / Link
                                 </option>
-                                <option value="https://" {{ request()->type == 'https://' ? 'selected' : '' }}>Link
-                                </option>
+                                {{-- <option value="https://" {{ request()->type == 'https://' ? 'selected' : '' }}>Link
+                                </option> --}}
                                 <option value="mailto:" {{ request()->type == 'mailto:' ? 'selected' : '' }}>Email
                                 </option>
                                 <option value="tel:" {{ request()->type == 'tel:' ? 'selected' : '' }}>Nomor Telepon
@@ -35,39 +35,55 @@
                             </select>
                         </div>
                         <div class="form-group mt-2">
+                            <label for="">Gaya QR <sup class="text-danger">*</sup></label>
+                            <select name="style" class="form-control">
+                                <option value="square" {{ request()->style == 'square' ? 'selected' : '' }}>Square
+                                <option value="round" {{ request()->style == 'round' ? 'selected' : '' }}>Round
+                            </select>
+                        </div>
+                        <div class="form-group mt-2">
                             <label for="">Konten <sup class="text-danger">*</sup></label>
-                            <input type="text" class="form-control" name="data" maxlength="256"
-                                placeholder="Maksimal 256 Karakter"
+                            <input type="text" class="form-control" name="data" maxlength="512"
+                                placeholder="Maksimal 512 Karakter"
                                 value="{{ request()->data != null ? request()->data : '' }}" required>
                             @error('data')
                                 <span class="alert">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="form-group mt-2">
-                            <label for="">Logo</label>
+                            <label for="">Logo (opsional)</label>
                             <input type="file" class="form-control" name="logo" accept="image/*">
                         </div>
-                        <div class="form-group text-center mt-3">
-                            <button class="btn btn-primary">Generate !</button>
-                            <a href="/" class="btn btn-danger">Reset</a>
+                        <div class="form-group mt-2">
+                            <label for="">Warna</label>
+                            <input type="color" class="form-control" name="color"
+                                value="{{ request()->color != null ? request()->color : '' }}">
                         </div>
-                    </form>
-                    <div class="mt-4 text-center">
-                        @if ($filename)
-                            {{-- @if ($image != null) --}}
-                            <img src="{{ asset($filename) }}">
-                            {{-- <img src="data:image/png;base64, {!! $qr !!} "> --}}
-                            {{-- @else
+                        <div class="mt-4 text-center">
+                            @if ($filename && $state == 1)
+                                {{-- @if ($image != null) --}}
+                                {{-- <img src="data:image/png;base64, {!! $qr !!} "> --}}
+                                {{-- @else
                                 <img src="{{ asset($filename) }}">
                             @endif --}}
-                            <div class="text-center">
-                                <a href="{{ asset($filename) }}" class="btn btn-primary mt-3" download>Download</a>
-                            </div>
-                        @endif
-                    </div>
+                                <div class="form-group text-center mb-3">
+                                    <button class="btn btn-primary">Re-generate !</button>
+                                    <a href="/" class="btn btn-danger">Reset</a>
+                                </div>
+                                <img src="{{ asset($filename) }}" width="230">
+                                <div class="text-center">
+                                    <a href="{{ asset($filename) }}" class="btn btn-primary mt-3" download>Download</a>
+                                </div>
+                            @else
+                                <div class="form-group text-center mt-3">
+                                    <button class="btn btn-primary">Generate !</button>
+                                </div>
+                            @endif
+                    </form>
                 </div>
             </div>
         </div>
+    </div>
 </body>
 
 </html>
